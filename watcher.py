@@ -92,9 +92,8 @@ SOURCES = [
 ]
 
 
-def is_england_match(event: dict) -> bool:
-    slug = event["slug"].lower()
-    return "england" in slug and ("world-cup" in slug or "fifa" in slug)
+def is_world_cup_event(event: dict) -> bool:
+    return "world-cup-2026" in event["slug"].lower()
 
 
 def load_seen() -> set[str]:
@@ -133,16 +132,16 @@ def main() -> int:
             print(f"WARN: failed source {url}: {e}", file=sys.stderr)
 
     seen = load_seen()
-    new_england = [
-        e for e in all_events if is_england_match(e) and e["id"] not in seen
+    new_wc = [
+        e for e in all_events if is_world_cup_event(e) and e["id"] not in seen
     ]
 
-    for e in new_england:
+    for e in new_wc:
         notify(
             token,
             chat_id,
             (
-                f"🏴󠁧󠁢󠁥󠁮󠁧󠁿 <b>New England match at Between The Bridges</b> "
+                f"⚽ <b>New World Cup 2026 event at Between The Bridges</b> "
                 f"({e['source']})\n\n"
                 f"<b>{e['title']}</b>\n"
                 f'<a href="{e["url"]}">Open on {e["source"]}</a>'
@@ -155,7 +154,7 @@ def main() -> int:
 
     print(
         f"Checked {len(all_events)} events across {len(SOURCES)} sources; "
-        f"{len(new_england)} new England match(es); "
+        f"{len(new_wc)} new World Cup event(s); "
         f"{len(all_ids)} total tracked."
     )
     return 0
